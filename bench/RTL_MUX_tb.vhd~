@@ -1,0 +1,49 @@
+library AESLibrary;
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+use AESLibrary.state_definition_package.all;
+library work;
+
+entity RTL_MUX_tb is
+end RTL_MUX_tb;
+
+architecture RTL_MUX_tb_arch of RTL_MUX_tb is 
+    component RTL_MUX 
+        port(
+    		text0_i: in bit128;
+    		text1_i: in bit128;
+    		getText_i: in std_logic;
+    		text_o: out bit128
+        );
+    end component;
+
+    signal text0_test_i: bit128;
+    signal text1_test_i: bit128;
+    signal getText_test_i: std_logic;
+    signal text_test_o: bit128;
+
+begin
+    DUT: RTL_MUX
+    port map(
+        text0_i=>text0_test_i,
+        text1_i=>text1_test_i,
+        getText_i=>getText_test_i,
+	text_o=>text_test_o
+    );
+
+    text0_test_i<=X"00000000000000000000000000000000";
+    text1_test_i<=X"11111111111111111111111111111111";
+    getText_test_i<='1';
+end RTL_MUX_tb_arch;
+
+configuration RTL_MUX_tb_cfig of RTL_MUX_tb is 
+    for RTL_MUX_tb_arch
+        for DUT: RTL_MUX
+            use entity work.RTL_MUX(RTL_MUX_arch);
+        end for;
+    end for;
+end RTL_MUX_tb_cfig;
+
+
+

@@ -1,0 +1,124 @@
+library AESLibrary;
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+use AESLibrary.state_definition_package.all;
+
+entity InvAES is
+port(
+    start_i:in std_logic;
+    clock_i:in std_logic;
+    reset_i:in std_logic;
+    data_i:in bit128;
+    data_o:out bit128;
+    aes_on_o:out std_logic
+);
+end InvAES;
+
+
+architecture InvAES_arch of InvAES is
+
+component InvAESRound 
+port(
+    clock_i:in std_logic;
+    round_i:in bit4;
+    currenttext_i:in bit128;
+    enableInvMixColumns_i:in std_logic;
+    enableRoundcomputing_i:in std_logic;
+    resetb_i:in std_logic;
+    data_o: out bit128
+);
+end component;  
+
+component Counter 
+port(
+    clock_i:in std_logic;
+    enable_i:in std_logic;
+    resetb_i:in std_logic;
+    count_o:out bit4
+);
+end component;  
+
+component RTL_MUX 
+port(
+    text0_i:in bit128;
+    text1_i:in bit128;
+    getText_i:in std_logic;
+    text_o:out bit128
+);
+end component;  
+
+component FSM_InvAES 
+port(
+    clock_i:in std_logic;
+    resetb_i:in std_logic;
+    round_i:in bit4;
+    start_i:in std_logic;
+    done_o:out std_logic;
+    enableCounter_o:out std_logic;
+    enableMixcolumns_o:out std_logic;
+    enableOutput_o:out std_logic;
+    enableRoundcomputing_o:out std_logic;
+    getciphertext_o:out std_logic;
+    resetCounter_o:out std_logic
+);
+end component;  
+
+
+signal resetb_s:std_logic;
+signal round_s:bit4;
+signal resetCounter_s:std_logic;
+signal enableCounter_s:std_logic;
+signal enableMixColumns_s:std_logic;
+signal enableRoundComputing_s:std_logic;
+signal data_s:bit128;
+signal getCipherText_s:std_logic;
+signal text_s:bit128;
+signal enableOutput_s:std_logic;
+
+
+begin 
+
+FSM_InvAES0:FSM_InvAES port map(	
+    clock_i=>clock_i,
+    resetb_i=>resetb_s,
+    round_i=>round_s,
+    start_i=>start_i,
+    done_o=>aes_on_o,
+    enableCounter_o=>enableCounter_s,
+    enableMixcolumns_o=>enableMixColumns_s,
+    enableOutput_o=>enableOutput_s,
+    enableRoundcomputing_o=>enableRoundComputing_s,
+    getciphertext_o=>getCipherText_s,
+    resetCounter_o=>resetCounter_s    
+);
+
+Counter0:Counter port map(
+    clock_i=>clock_i,
+    enable_i=>enableCounter_s,
+    resetb_i=>resetCounter_s,
+    count_o=>round_s
+);
+
+RTL_MUX0:RTL_MUX port map(
+    text0_i=>data_i,
+    text1_i=>data_s,
+    getText_i=>getCipherText_s,
+    text_o=>text_s
+);
+
+InvAESRound0:InvAESRound port map(
+    clock_i=>clock_i,
+    round_i=>round_s,
+    currenttext_i=>text_s,
+    enableInvMixColumns_i=>enableMixColumns_s,
+    enableRoundcomputing_i=>enableRoundComputing_s,
+    resetb_i=>resetb_s,
+    data_o=>data_s
+);
+
+data_o<=data_s when enableOutput_s='1' else  
+    X"00000000000000000000000000000000" when enableOutput_s='0';
+resetb_s<=not(reset_i);
+     
+end InvAES_arch;

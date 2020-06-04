@@ -1,0 +1,107 @@
+library AESLibrary;
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+use AESLibrary.state_definition_package.all;
+
+entity Multiply is
+port(
+    Multiply_i: in column_state;
+    Multiply_o: out column_state
+);
+end Multiply;
+
+
+architecture Multiply_Arch of Multiply is
+-----------------------------------------
+signal ElementRow0: bit8;
+signal ElementRow1: bit8;
+signal ElementRow2: bit8;
+signal ElementRow3: bit8;
+-----------------------------------------
+signal ER0_Mul2: bit8;
+signal ER0_Mul4: bit8;
+signal ER0_Mul8: bit8;
+
+signal ER0_Mul09: bit8;
+signal ER0_Mul0B: bit8;
+signal ER0_Mul0D: bit8;
+signal ER0_Mul0E: bit8;
+-----------------------------------------
+signal ER1_Mul2: bit8;
+signal ER1_Mul4: bit8;
+signal ER1_Mul8: bit8;
+
+signal ER1_Mul09: bit8;
+signal ER1_Mul0B: bit8;
+signal ER1_Mul0D: bit8;
+signal ER1_Mul0E: bit8;
+-----------------------------------------
+signal ER2_Mul2: bit8;
+signal ER2_Mul4: bit8;
+signal ER2_Mul8: bit8;
+
+signal ER2_Mul09: bit8;
+signal ER2_Mul0B: bit8;
+signal ER2_Mul0D: bit8;
+signal ER2_Mul0E: bit8;
+-----------------------------------------
+signal ER3_Mul2: bit8;
+signal ER3_Mul4: bit8;
+signal ER3_Mul8: bit8;
+
+signal ER3_Mul09: bit8;
+signal ER3_Mul0B: bit8;
+signal ER3_Mul0D: bit8;
+signal ER3_Mul0E: bit8;
+-----------------------------------------
+
+begin
+
+ElementRow0 <= Multiply_i(0);
+ElementRow1 <= Multiply_i(1);
+ElementRow2 <= Multiply_i(2);
+ElementRow3 <= Multiply_i(3);
+-----------------------------------------
+ER0_Mul2 <= ( ElementRow0(6 downto 0) & '0' ) xor ( "000" & ElementRow0(7) & ElementRow0(7) & '0' & ElementRow0(7) & ElementRow0(7) );
+ER0_Mul4 <= ( ER0_Mul2(6 downto 0) & '0' ) xor ( "000" & ER0_Mul2(7) & ER0_Mul2(7) & '0' & ER0_Mul2(7) & ER0_Mul2(7) );
+ER0_Mul8 <= ( ER0_Mul4(6 downto 0) & '0' ) xor ( "000" & ER0_Mul4(7) & ER0_Mul4(7) & '0' & ER0_Mul4(7) & ER0_Mul4(7) );
+
+ER0_Mul09 <= ER0_Mul8 xor ElementRow0;
+ER0_Mul0B <= ER0_Mul8 xor ER0_Mul2 xor ElementRow0;
+ER0_Mul0D <= ER0_Mul8 xor ER0_Mul4 xor ElementRow0;
+ER0_Mul0E <= ER0_Mul8 xor ER0_Mul4 xor ER0_Mul2;
+-----------------------------------------
+ER1_Mul2 <= ( ElementRow1(6 downto 0) & '0' ) xor ( "000" & ElementRow1(7) & ElementRow1(7) & '0' & ElementRow1(7) & ElementRow1(7) );
+ER1_Mul4 <= ( ER1_Mul2(6 downto 0) & '0' ) xor ( "000" & ER1_Mul2(7) & ER1_Mul2(7) & '0' & ER1_Mul2(7) & ER1_Mul2(7) );
+ER1_Mul8 <= ( ER1_Mul4(6 downto 0) & '0' ) xor ( "000" & ER1_Mul4(7) & ER1_Mul4(7) & '0' & ER1_Mul4(7) & ER1_Mul4(7) );
+
+ER1_Mul09 <= ER1_Mul8 xor ElementRow1;
+ER1_Mul0B <= ER1_Mul8 xor ER1_Mul2 xor ElementRow1;
+ER1_Mul0D <= ER1_Mul8 xor ER1_Mul4 xor ElementRow1;
+ER1_Mul0E <= ER1_Mul8 xor ER1_Mul4 xor ER1_Mul2;
+-----------------------------------------
+ER2_Mul2 <= ( ElementRow2(6 downto 0) & '0'  ) xor ( "000" & ElementRow2(7) & ElementRow2(7) & '0' & ElementRow2(7) & ElementRow2(7) );
+ER2_Mul4 <= ( ER2_Mul2(6 downto 0) & '0'  ) xor ( "000" & ER2_Mul2(7) & ER2_Mul2(7) & '0' & ER2_Mul2(7) & ER2_Mul2(7) );
+ER2_Mul8 <= ( ER2_Mul4(6 downto 0) & '0'  ) xor ( "000" & ER2_Mul4(7) & ER2_Mul4(7) & '0' & ER2_Mul4(7) & ER2_Mul4(7) );
+
+ER2_Mul09 <= ER2_Mul8 xor ElementRow2;
+ER2_Mul0B <= ER2_Mul8 xor ER2_Mul2 xor ElementRow2;
+ER2_Mul0D <= ER2_Mul8 xor ER2_Mul4 xor ElementRow2;
+ER2_Mul0E <= ER2_Mul8 xor ER2_Mul4 xor ER2_Mul2;
+-----------------------------------------
+ER3_Mul2 <= ( ElementRow3(6 downto 0) & '0'  ) xor ( "000" & ElementRow3(7) & ElementRow3(7) & '0' & ElementRow3(7) & ElementRow3(7) );
+ER3_Mul4 <= ( ER3_Mul2(6 downto 0) & '0'  ) xor ( "000" & ER3_Mul2(7) & ER3_Mul2(7) & '0' & ER3_Mul2(7) & ER3_Mul2(7) );
+ER3_Mul8 <= ( ER3_Mul4(6 downto 0) & '0'  ) xor ( "000" & ER3_Mul4(7) & ER3_Mul4(7) & '0' & ER3_Mul4(7) & ER3_Mul4(7) );
+
+ER3_Mul09 <= ER3_Mul8 xor ElementRow3;
+ER3_Mul0B <= ER3_Mul8 xor ER3_Mul2 xor ElementRow3;
+ER3_Mul0D <= ER3_Mul8 xor ER3_Mul4 xor ElementRow3;
+ER3_Mul0E <= ER3_Mul8 xor ER3_Mul4 xor ER3_Mul2;
+-----------------------------------------
+Multiply_o(0) <= ER0_Mul0E xor ER1_Mul0B xor ER2_Mul0D xor ER3_Mul09;
+Multiply_o(1) <= ER0_Mul09 xor ER1_Mul0E xor ER2_Mul0B xor ER3_Mul0D;
+Multiply_o(2) <= ER0_Mul0D xor ER1_Mul09 xor ER2_Mul0E xor ER3_Mul0B;
+Multiply_o(3) <= ER0_Mul0B xor ER1_Mul0D xor ER2_Mul09 xor ER3_Mul0E;
+  
+end Multiply_Arch;
